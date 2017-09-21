@@ -17,6 +17,9 @@ $ dokku plugins-install
 $ dokku plugin:install https://github.com/Tuetuopay/dokku-postgres-standalone.git
 ```
 
+Then add a [`.pgpass`](https://www.postgresql.org/docs/current/static/libpq-pgpass.html)
+file in `~dokku/.dokkurc/` with admin credentials to your Postgres instance.
+
 ## Commands
 
 ```shell
