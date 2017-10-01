@@ -4,3 +4,6 @@ set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 # Standard postgres is > 200MB ...
 docker pull postgres:alpine
 
+# That folder will contain the .pgpass file
+mkdir -p "$DOKKU_ROOT/.dokkurc"
+
