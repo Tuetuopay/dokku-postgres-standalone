@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+APP="$2"
+
+check_pgpass() {
+	if [[ ! -f "$DOKKU_ROOT/.dokkurc/.pgpass" ]]; then
+		echo ".pgpass is missing in $DOKKU_ROOT/.dokkurc"
+		exit 1
+	fi
+}
+
+export_pgpass_contents() {
+	check_pgpass
+	export PG_HOST=$(cat "$DOKKU_ROOT/.dokkurc/.pgpass" | cut -d: -f1)
+	export PG_PORT=$(cat "$DOKKU_ROOT/.dokkurc/.pgpass" | cut -d: -f2)
+	export PG_DB=$(cat "$DOKKU_ROOT/.dokkurc/.pgpass" | cut -d: -f3)
+	export PG_USER=$(cat "$DOKKU_ROOT/.dokkurc/.pgpass" | cut -d: -f4)
+	export PG_PASS=$(cat "$DOKKU_ROOT/.dokkurc/.pgpass" | cut -d: -f5)
+}
+
+do_psql_admin() {
+	check_pgpass
+	export_pgpass_contents
+	env | sort
+	docker run --rm -it -v $DOKKU_ROOT/.dokkurc/.pgpass:/root/.pgpass postgres:alpine \
+		psql -h "$PG_HOST" -U "$PG_USER" -d "$PG_DB"
+}
+
