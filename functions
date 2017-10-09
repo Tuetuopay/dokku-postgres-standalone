@@ -24,12 +24,12 @@ do_psql_admin() {
 	export_pgpass_contents
 	env | sort
 	docker run --rm -it -v "$DOKKU_ROOT/.dokkurc/.pgpass:/root/.pgpass:z" postgres:alpine \
-		psql -h "$PG_HOST" -U "$PG_USER" -d "$PG_DB"
+		psql -h "$PG_HOST" -U "$PG_USER" -d "$PG_DB" -p "$PG_PORT"
 }
 run_sql_admin() {
 	check_pgpass
 	export_pgpass_contents
 	docker run --rm -i -v "$DOKKU_ROOT/.dokkurc/.pgpass:/root/.pgpass:z" postgres:alpine \
-		psql -h "$PG_HOST" -U "$PG_USER" -d "$PG_DB" --command "$1"
+		psql -h "$PG_HOST" -U "$PG_USER" -d "$PG_DB" -p "$PG_PORT" --command "$1"
 }
 
