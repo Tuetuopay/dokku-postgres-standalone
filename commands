@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+PLUGIN_BASE_PATH="$PLUGIN_PATH_"
+if [[ -n $DOKKU_API_VERSION ]]; then
+	PLUGIN_BASE_PATH="$PLUGIN_ENABLED_PATH"
+fi
+source "$PLUGIN_BASE_PATH/common/functions"
+source "$(dirname $0)/functions"
+set +e
+
+case "$1" in
+	psql:admin_console)
+		has_tty && TTY_OPTS="-t"
+		do_psql_admin
+		;;
+esac
+
