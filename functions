@@ -3,11 +3,25 @@ set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
 APP="$2"
 
+DOKKU_STORAGE_PATH="$DOKKU_LIB_ROOT/data"
+PSQL_STORAGE_PATH="$DOKKU_STORAGE_PATH/postgres-standalone"
+
 check_pgpass() {
 	if [[ ! -f "$DOKKU_ROOT/.dokkurc/.pgpass" ]]; then
 		echo ".pgpass is missing in $DOKKU_ROOT/.dokkurc"
 		exit 1
 	fi
+}
+
+check_exists() {
+	if [[ -f "$PSQL_STORAGE_PATH/db_$APP" ]] || [[ -f "$PSQL_STORAGE_PATH/pass_$APP" ]]; then
+		echo "Database $APP already exists."
+		exit 1
+	fi
+}
+
+db_name() {
+	echo "dokku_$1" | tr .- _
 }
 
 export_pgpass_contents() {

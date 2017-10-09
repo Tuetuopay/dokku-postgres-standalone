@@ -15,6 +15,13 @@ case "$1" in
 		do_psql_admin
 		;;
 
+	psql:create)
+		check_exists
+		# Create credentials
+		db_name "$APP" > "$PSQL_STORAGE_PATH/db_$APP"
+		openssl rand -hex 64 > "$PSQL_STORAGE_PATH/pass_$APP"
+		chmod 600 "$PSQL_STORAGE_PATH/db_$APP" "$PSQL_STORAGE_PATH/pass_$APP"
+
 	help)
 		HELP=$(cat<<EOF
     psql:admin_console, Lauch a postgresql console as admin user
