@@ -14,5 +14,17 @@ case "$1" in
 		has_tty && TTY_OPTS="-t"
 		do_psql_admin
 		;;
+
+	help)
+		HELP=$(cat<<EOF
+    psql:admin_console, Lauch a postgresql console as admin user
+EOF
+)
+		if [[ -n $DOKKU_API_VERSION ]]; then
+			echo "$HELP"
+		else
+			cat && echo "$HELP"
+		fi
+		;;
 esac
 
